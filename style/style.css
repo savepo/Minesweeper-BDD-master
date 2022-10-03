@@ -1,0 +1,44 @@
+* {
+   
+}
+
+body {
+    background-color: rgb(139, 184, 133);
+     background-image: url("img/img1.jpeg");
+}
+
+#board {
+    /* border: 10px solid rgb(62, 107, 53); */
+   
+    /* margin: 0 auto; */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}  
+
+#board div {
+    width: 48px;
+    height: 48px;
+    border: 1px solid whitesmoke;
+    /* text */
+    font-size: 30px;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(36, 35, 35);
+    border: 1px solid rgb(204, 204, 204);
+}
+
+#board div:hover {
+    background-color: rgb(146, 156, 140);
+    cursor: pointer;
+}
+
+.container {
+    background-image: url("img1.jpg");
+}
+
+.unhidden {
+    background-color: red !important;
+}
