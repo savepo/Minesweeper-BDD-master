@@ -35,27 +35,12 @@ Scenario: Reveal a cell -->  the cell should show their content
 When the user reveals the cell "1-1"
 Then the cell "1-1" should be revealed
 
-
-# Scenario: Cell status by default: enabled
-# Given the user loads the following mock data: "*o-*o"
-# Then all the cells should be enabled
-
-# Scenario: Reseting the game, the default status should be set
-# Given Load mock data "*o*-oo*-**o"
-# And the user reveals the cell "1-2"
-# And the user reveañs the cell "1-1"
-# When the user reset the game
-# Then all the cells should be hidden
-# And all the cells should be enabled
-# And the flag counter should be "4"
-# And the time counter should be ""
-
 # # Revealing cells
 
-# Scenario: The game is over when the user reveals a cell that contains a mine
-# Given the user loads the following mock data: "*oo-ooo-ooo"
-# When the user reveals the cell "1-1"
-# Then the game should be finished with the following result: "Game over"
+Scenario: The game is over when the user reveals a cell that contains a mine
+Given the user loads the following mock data: "*oo-ooo-ooo"
+When the user reveals the cell "1-1"
+Then the game should be finished with the following result: "Game over"
 
 # Scenario: A explosion is displayed when the user reveals a cell that contains a mine
 # Given the user loads the following mock data: "*oo-ooo-ooo"
@@ -98,6 +83,20 @@ Then the cell "1-1" should be revealed
 #     | ***-*o*-*oo |       6       |
 #     | ***-*o*-**o |       7       |
 #     | ***-*o*-*** |       8       |
+
+# Scenario: Cell status by default: enabled
+# Given the user loads the following mock data: "*o-*o"
+# Then all the cells should be enabled
+
+# Scenario: Reseting the game, the default status should be set
+# Given Load mock data "*o*-oo*-**o"
+# And the user reveals the cell "1-2"
+# And the user reveals the cell "1-1"
+# When the user reset the game
+# Then all the cells should be hidden
+# And all the cells should be enabled
+# And the flag counter should be "4"
+# And the time counter should be ""
 
 # # Marking cells as something 
 
