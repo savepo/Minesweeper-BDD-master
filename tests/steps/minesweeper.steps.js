@@ -53,13 +53,16 @@ Then('all the cells should be enabled', async function () {
 });
 
 When ('the user reveals the cell {string}', async function(string) {
-    await page.locator('id=' + string).click();
+    await page.locator('data-testid=' + string).click();
 
 });
 
 Then('the cell {string} should be revealed', async function (string) {
-    const clickedCell = await page.locator('id=' + string);
-    expect(page.locator('id=' + string).).toBe("unhidden");
+    const clickedCell = await page.locator('data-testid=' + string);
+    const classCell = await clickedCell.getAttribute('class');
+    expect(classCell.includes("unhidden")).toBeTruthy();
+    // expect(clickedCell.getAttribute()).toBe(string);
+
     // let x = string.split("-")[0];
     // let y = string.split("-")[1];
 });

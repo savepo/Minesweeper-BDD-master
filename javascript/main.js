@@ -1,4 +1,4 @@
-const { default: test } = require("@playwright/test");
+
 
 let boardSize = 8;
 let rows = 8;
@@ -20,7 +20,9 @@ window.onload = function () {
     printBoard();
     generateBackendBoard();
     if (!window.location.search.includes("?")) {
-        generateMines();
+        generateMinesWithoutMockData();
+    } else {
+        generateMinesForMockData();
     }
     
     
@@ -28,18 +30,19 @@ window.onload = function () {
 
 }
 
-// document.addEventListener("click", (event) => {
-//     let cell = event.target.id;
-//     cell = cell.split("-");
-//     let clickedColumn = cell[0];
-//     let clickedRow = cell[1];
-//     console.log(boardArrayBackend[clickedColumn][clickedRow]);
-//     // modificar el array y ponerla exposed y atraves de eso cambiar la clase
-//     // arrayInformation[column][row] = "exposed";
-//     console.log(boardArrayVisual[clickedColumn][clickedRow], clickedColumn, clickedRow);
-//     printBackendBoard(clickedColumn, clickedRow);
+document.addEventListener("click", (event) => {
+    let cell = event.target.id;
+    cell = cell.split("-");
+    let clickedColumn = cell[0];
+    let clickedRow = cell[1];
+    console.log(boardArrayBackend[clickedColumn][clickedRow]);
+    // modificar el array y ponerla exposed y atraves de eso cambiar la clase
+    // arrayInformation[column][row] = "exposed";
+    console.log(boardArrayVisual[clickedColumn][clickedRow], clickedColumn, clickedRow);
+    checkClickedCellContent(clickedColumn, clickedRow);
+    printBackendBoard(clickedColumn, clickedRow);
 
-// });
+});
 
 function getMockData() {
     return window.location.search.split("?");
@@ -65,7 +68,7 @@ function createBoardElements() {
             boardArrayVisual[i][j].id = i.toString() + "-" + j.toString();
             boardArrayVisual[i][j].classList = "hidden";
             boardArrayVisual[i][j].classList.add("cell");
-            boardArrayVisual.data-testid
+            boardArrayVisual[i][j].setAttribute("data-testid", i.toString() + "-" + j.toString());
         }
     }
 }
@@ -73,7 +76,7 @@ function createBoardElements() {
 function printBoard() {
     for (let i = 0; i < columns; i++) {
         for (let j = 0; j < rows; j++) {
-            document.getElementById("column" + i.toString()).append(boardArrayVisual[i][j]);
+            document.getElementById("column" + i.toString()).append(boardArrayVisual[j][i]);
         }
     }
 }
@@ -98,10 +101,11 @@ function generateBackendBoard() {
             boardArrayBackend[i][j] = "o"
         }
     }
+
+    console.log(boardArrayBackend);
 }
 
-function generateMines() {
-
+function generateMinesWithoutMockData() {
     for (let i = 0; i < minesNum; i++) {
         x = getRandomInt(0, columns);
         y = getRandomInt(0, rows);
@@ -109,10 +113,24 @@ function generateMines() {
         if (boardArrayBackend[x][y].includes("*")) {
             i--;
         }
-
         boardArrayBackend[x][y] = "*";
+        
+    } 
+}
+
+function generateMinesForMockData() {
+    let mockData = getMockData();
+    let dividedMD = mockData[1].split("-");
+    for (let i = 0; i < columns; i++) {
+        for (let j = 0; j < rows; j++) {
+            if (dividedMD[j].charAt(i).includes("*")) {
+                boardArrayBackend[i][j] = "*";
+            }          
+        }
     }
 }
+
+
 
 function printBackendBoard(x, y) {
     let id = x + "-" + y;
@@ -133,11 +151,14 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
   }
 
-function checkAllCellsHidden() {
-    for (let i = 0; i < columns; i++) {
-
-        for (let j = 0; j < rows; j++) {
-
+function checkClickedCellContent(c, r) {
+    if (boardArrayBackend[c][r].includes("*")) {
+        for (let i = 0; i < columns; i++) {
+            for (let j = 0; j < rows; j++) {
+                if(boardArrayBackend[i][j].includes("*")) {
+                    document.getElementById(i.toString() + "-" + j.toString()).innerHTML = "&#128163";
+                }              
+            }    
         }
     }
 }
