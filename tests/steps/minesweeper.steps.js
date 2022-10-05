@@ -39,18 +39,18 @@ Then('the number of columns in the board should be {string}', async function (st
     expect(columnNumber.toString()).toBe(string);
 });
 
-Then('all the cells should be enabled', async function () {
-    const cellNum = await page.$$('.cell');
-    let CellId = "";
-    let Cell;
-    for (let i = 0; i < cellNum.length; i++) {
-        for (let j = 0; j < array.length; j++) {
-            CellId = i.toString() + "-" + j.toString();
-            Cell = await page.$$('#' + CellId);
-            expect(Cell).toBeEnabled();
-        }
-    }
-});
+// Then('all the cells should be enabled', async function () {
+//     const cellNum = await page.$$('.cell');
+//     let CellId = "";
+//     let Cell;
+//     for (let i = 0; i < cellNum.length; i++) {
+//         for (let j = 0; j < 3; j++) {
+//             CellId = i.toString() + "-" + j.toString();
+//             Cell = await page.$$('#' + CellId);
+//             expect(Cell).toBeDisabled();
+//         }
+//     }
+// });
 
 When ('the user reveals the cell {string}', async function(string) {
     await page.locator('data-testid=' + string).click();
@@ -66,4 +66,13 @@ Then('the cell {string} should be revealed', async function (string) {
     // let x = string.split("-")[0];
     // let y = string.split("-")[1];
 });
+
+Then('the cell {string} should display a bomb', async (string) => {
+	const displayCell = await page.locator('data-testid=' + string).innerText();
+    let bomb = "💣";
+	// const display = await page.locator('data-testid=display').inputValue();
+	expect(displayCell).toBe(bomb);
+	// return "pending";
+});
+
 

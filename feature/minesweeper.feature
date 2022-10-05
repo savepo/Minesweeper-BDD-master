@@ -31,21 +31,22 @@ Examples:
 |*o-*o    | 2    | 2       |
 |*ooo-*o*o| 2    | 4       |
 
+# Scenario: Cell status by default: enabled
+# Given the user loads the following mock data: "*o-*o"
+# Then all the cells should be enabled
+
 Scenario: Reveal a cell -->  the cell should show their content
-When the user reveals the cell "1-1"
-Then the cell "1-1" should be revealed
+When the user reveals the cell "0-0"
+Then the cell "0-0" should be revealed
 
 # # Revealing cells
 
-Scenario: The game is over when the user reveals a cell that contains a mine
-Given the user loads the following mock data: "*oo-ooo-ooo"
-When the user reveals the cell "1-1"
-Then the game should be finished with the following result: "Game over"
-
-# Scenario: A explosion is displayed when the user reveals a cell that contains a mine
+# Scenario: The game is over when the user reveals a cell that contains a mine
 # Given the user loads the following mock data: "*oo-ooo-ooo"
 # When the user reveals the cell "1-1"
-# Then la celda "1-1" debe mostrar una explosion
+# Then the game should be finished with the following result: "Game over"
+
+
 
 
 # @manual
@@ -54,10 +55,17 @@ Then the game should be finished with the following result: "Game over"
 # When the user reveals a cell that contains "bomb"
 # Then the "TimeCounter" should stop at "2"
 
-# Scenario: All the mines are revealed when the user reveals a cell that contains a mine
-# Given the user loads the following mock data: "*o-oo"
-# When the user reveals the cell "1-1"
-# Then the game sho
+Scenario: All the mines are revealed when the user reveals a cell that contains a mine
+Given the user loads the following mock data: "**-*o"
+When the user reveals the cell "0-0"
+Then the cell "0-0" should be revealed
+And the cell "0-1" should be revealed
+And the cell "1-0" should be revealed
+
+Scenario: A bomb image is displayed when the user reveals a cell that contains a mine
+Given the user loads the following mock data: "*oo-ooo-ooo"
+When the user reveals the cell "0-0"
+Then the cell "0-0" should display a bomb
 
 # # Scenario: Reveal a cell that contains a mine -> se deben destacar las banderitas mal marcadas
 # # //TODO
@@ -83,10 +91,6 @@ Then the game should be finished with the following result: "Game over"
 #     | ***-*o*-*oo |       6       |
 #     | ***-*o*-**o |       7       |
 #     | ***-*o*-*** |       8       |
-
-# Scenario: Cell status by default: enabled
-# Given the user loads the following mock data: "*o-*o"
-# Then all the cells should be enabled
 
 # Scenario: Reseting the game, the default status should be set
 # Given Load mock data "*o*-oo*-**o"

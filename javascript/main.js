@@ -124,7 +124,7 @@ function generateMinesForMockData() {
     for (let i = 0; i < columns; i++) {
         for (let j = 0; j < rows; j++) {
             if (dividedMD[j].charAt(i).includes("*")) {
-                boardArrayBackend[i][j] = "*";
+                boardArrayBackend[j][i] = "*";
             }          
         }
     }
@@ -157,6 +157,8 @@ function checkClickedCellContent(c, r) {
             for (let j = 0; j < rows; j++) {
                 if(boardArrayBackend[i][j].includes("*")) {
                     document.getElementById(i.toString() + "-" + j.toString()).innerHTML = "&#128163";
+                    document.getElementById(i.toString() + "-" + j.toString()).classList.remove("hidden");
+                    document.getElementById(i.toString() + "-" + j.toString()).classList.add("unhidden");
                 }              
             }    
         }
