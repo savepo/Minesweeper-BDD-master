@@ -69,7 +69,7 @@ Then('the cell {string} should be revealed', async function (string) {
 
 Then('the cell {string} should display a bomb', async (string) => {
 	const displayCell = await page.locator('data-testid=' + string).innerText();
-    let bomb = "💣";
+    let bomb = "\u{1F4A3}";
 	// const display = await page.locator('data-testid=display').inputValue();
 	expect(displayCell).toBe(bomb);
 	// return "pending";

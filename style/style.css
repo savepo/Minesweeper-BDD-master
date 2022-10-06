@@ -3,19 +3,20 @@
 }
 
 body {
-    background-color: rgb(139, 184, 133);
-     background-image: url("img/img1.jpeg");
+    background-color: rgb(31, 29, 30);
+
 }
 
 #board {
     /* border: 10px solid rgb(62, 107, 53); */
-   
+    
     /* margin: 0 auto; */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
     align-items: center;
+
 }  
 
 #board div {
@@ -28,6 +29,8 @@ body {
     align-items: center;
     background-color: rgb(36, 35, 35);
     border: 1px solid rgb(204, 204, 204);
+    text-align: center;
+    border-radius: 3px;
 }
 
 #board div:hover {
@@ -39,6 +42,48 @@ body {
     background-image: url("img1.jpg");
 }
 
+.game-info {
+    width: 600px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    background-color: rgb(226, 149, 207);
+    border-radius: 50px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 60px;
+}
+
+.game-info h1 {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.game-info button {
+    width: 60px;
+    height: 60px;
+    background-color: transparent;
+    border: transparent;
+    overflow: hidden;
+}
+
+.game-info button:hover {
+    background-color: red;
+    border-radius: 100px;
+}
+
+.game-info button img {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
 .unhidden {
-    background-color: red !important;
+    background-color: rgb(226, 149, 207) !important;
 }

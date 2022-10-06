@@ -31,9 +31,7 @@ Examples:
 |*o-*o    | 2    | 2       |
 |*ooo-*o*o| 2    | 4       |
 
-# Scenario: Cell status by default: enabled
-# Given the user loads the following mock data: "*o-*o"
-# Then all the cells should be enabled
+
 
 Scenario: Reveal a cell -->  the cell should show their content
 When the user reveals the cell "0-0"
@@ -46,14 +44,10 @@ Then the cell "0-0" should be revealed
 # When the user reveals the cell "1-1"
 # Then the game should be finished with the following result: "Game over"
 
-
-
-
-# @manual
-# Scenario: Stop the Time Counter when a mine is revealed
+# Scenario: Revealing all the cells that not contains a mine -> Game won
 # Given the user loads the following mock data: "*o"
-# When the user reveals a cell that contains "bomb"
-# Then the "TimeCounter" should stop at "2"
+# When the user reveals the cell "1-2"
+# Then the game should be finished with the following result: "Win"
 
 Scenario: All the mines are revealed when the user reveals a cell that contains a mine
 Given the user loads the following mock data: "**-*o"
@@ -67,13 +61,7 @@ Given the user loads the following mock data: "*oo-ooo-ooo"
 When the user reveals the cell "0-0"
 Then the cell "0-0" should display a bomb
 
-# # Scenario: Reveal a cell that contains a mine -> se deben destacar las banderitas mal marcadas
-# # //TODO
 
-# Scenario: Revealing all the cells that not contains a mine -> Game won
-# Given the user loads the following mock data: "*o"
-# When the user reveals the cell "1-2"
-# Then the game should be finished with the following result: "Win"
 
 # Scenario Outline: Revealing a cell without mine but with adjacent mines, counting the number of adjacent mines
 # Given the user loads the following mock data: <board>
@@ -91,6 +79,10 @@ Then the cell "0-0" should display a bomb
 #     | ***-*o*-*oo |       6       |
 #     | ***-*o*-**o |       7       |
 #     | ***-*o*-*** |       8       |
+
+# Scenario: Cell status by default: enabled
+# Given the user loads the following mock data: "*o-*o"
+# Then all the cells should be enabled
 
 # Scenario: Reseting the game, the default status should be set
 # Given Load mock data "*o*-oo*-**o"
@@ -162,7 +154,11 @@ Then the cell "0-0" should display a bomb
 # When the user marks the cell "1-1" as uncertain
 # Then the "TimeCounter" starts at "0"
 
-
+# @manual
+# Scenario: Stop the Time Counter when a mine is revealed
+# Given the user loads the following mock data: "*o"
+# When the user reveals a cell that contains "bomb"
+# Then the "TimeCounter" should stop at "2"
 
 # # Happy Face
 
@@ -309,3 +305,5 @@ Then the cell "0-0" should display a bomb
 # When the user left-click on the face image
 # Then the game should be reseted
 
+# # Scenario: Reveal a cell that contains a mine -> se deben destacar las banderitas mal marcadas
+# # //TODO

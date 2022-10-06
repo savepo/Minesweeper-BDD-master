@@ -1,5 +1,3 @@
-
-
 let boardSize = 8;
 let rows = 8;
 let columns = 8;
@@ -24,40 +22,35 @@ window.onload = function () {
     } else {
         generateMinesForMockData();
     }
-    
-    
-    
-
+    faceStatus("Neutral");
 }
 
 document.addEventListener("click", (event) => {
-    let cell = event.target.id;
-    cell = cell.split("-");
-    let clickedColumn = cell[0];
-    let clickedRow = cell[1];
-    console.log(boardArrayBackend[clickedColumn][clickedRow]);
-    // modificar el array y ponerla exposed y atraves de eso cambiar la clase
-    // arrayInformation[column][row] = "exposed";
-    console.log(boardArrayVisual[clickedColumn][clickedRow], clickedColumn, clickedRow);
-    checkClickedCellContent(clickedColumn, clickedRow);
-    printBackendBoard(clickedColumn, clickedRow);
+    try {
+        let cell = event.target.id;
+        cell = cell.split("-");
+        let clickedColumn = cell[0];
+        let clickedRow = cell[1];
+        checkClickedCellContent(clickedColumn, clickedRow);
+        revealingClickedCells(clickedColumn, clickedRow);
+        showAdjacentNumberOfMines(clickedColumn, clickedRow);
+    } catch {}
 
+    // console.log(boardArrayBackend[clickedColumn][clickedRow]);
+    // console.log(boardArrayVisual[clickedColumn][clickedRow], clickedColumn, clickedRow);
 });
 
-function getMockData() {
-    return window.location.search.split("?");
-}
-
+// CREATING ARRAY
 function createBoardArrays() {
-    boardArrayVisual = new Array(rows);
-    columnsArray = new Array(columns);
+    boardArrayVisual = [rows];
+    columnsArray = [columns];
     for (let i = 0; i < columns; i++) {
-        boardArrayVisual[i] = new Array(columns);
+        boardArrayVisual[i] = [columns];
     }
 }
 
+// FILLING ELEMENTS ON THE CREATED ARRAY
 function createBoardElements() {
-    
     for (let i = 0; i < columns; i++) {
         columnsArray[i] = document.createElement("div");
         columnsArray[i].id = "column" + i.toString();
@@ -73,6 +66,7 @@ function createBoardElements() {
     }
 }
 
+// SHOW THE CREATED ARRAY (THE BOARD) ON THE SCREEN
 function printBoard() {
     for (let i = 0; i < columns; i++) {
         for (let j = 0; j < rows; j++) {
@@ -81,7 +75,12 @@ function printBoard() {
     }
 }
 
+// GETTING MOCK DATA FROM THE URL
+function getMockData() {
+    return window.location.search.split("?");
+}
 
+// CALCULATING ROWS AND COLUMNS FROM THE INTRODUCED MOCK DATA
 function calculateDimensionsFromMockData() {
     let ContentUrl = getMockData();
     let MockData = ContentUrl[1].split("-");
@@ -89,6 +88,7 @@ function calculateDimensionsFromMockData() {
     columns = MockData[0].length;
 }
 
+// CREATING THE ARRAY WHICH WE WILL USE TO WORK INTERNALLY
 function generateBackendBoard() {
     boardArrayBackend = new Array(rows);
     columnsArray = new Array(columns);
@@ -101,10 +101,10 @@ function generateBackendBoard() {
             boardArrayBackend[i][j] = "o"
         }
     }
-
     console.log(boardArrayBackend);
 }
 
+// FUNCTION THAT WILL GENERATE RANDOM MINES WHEN A MOCK DATA IS NOT CHARGED
 function generateMinesWithoutMockData() {
     for (let i = 0; i < minesNum; i++) {
         x = getRandomInt(0, columns);
@@ -113,11 +113,11 @@ function generateMinesWithoutMockData() {
         if (boardArrayBackend[x][y].includes("*")) {
             i--;
         }
-        boardArrayBackend[x][y] = "*";
-        
+        boardArrayBackend[x][y] = "*"; 
     } 
 }
 
+// FUNCTION THAT WILL GENERATE THE MINES THAT ARE INDICATED ON THE MOCK DATA
 function generateMinesForMockData() {
     let mockData = getMockData();
     let dividedMD = mockData[1].split("-");
@@ -130,27 +130,24 @@ function generateMinesForMockData() {
     }
 }
 
-
-
-function printBackendBoard(x, y) {
+// FUNCTION THAT REVEALS A CELL
+function revealingClickedCells(x, y) {
     let id = x + "-" + y;
     document.getElementById(id).classList.remove("hidden");
     document.getElementById(id).classList.add("unhidden");
     if (boardArrayBackend[x][y].includes("*")) {
-
         document.getElementById(id).innerHTML = "&#128163";
-
-    }
-    
-    
+    } 
 }
 
+// FUNCTION THAT GENERATES A RANDOM INTEGER
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
   }
 
+  // FUNCTION THAT WILL SHOW ALL THE MINES ON THE BOARD WHENEVER THE USER CLICKS A BOMB
 function checkClickedCellContent(c, r) {
     if (boardArrayBackend[c][r].includes("*")) {
         for (let i = 0; i < columns; i++) {
@@ -162,5 +159,32 @@ function checkClickedCellContent(c, r) {
                 }              
             }    
         }
+        faceStatus(":(");
     }
+}
+
+function showAdjacentNumberOfMines(c, r) {
+    let numOfMines = 0;
+    console.log(boardArrayBackend);
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            try {
+                if (boardArrayBackend[parseInt(c) - 1 + i][parseInt(r) - 1 + j] == "*") {
+                    numOfMines++;
+                }
+            } catch {
+                console.log("Trying to check a cell that is out of the range of the array");
+            }
+        }
+    }
+
+    console.log(c, r)
+
+    if (boardArrayBackend[parseInt(c)][parseInt(r)] != "*") {
+        document.getElementById(c.toString() + "-" + r.toString()).innerHTML = numOfMines.toString();
+    }
+}
+
+function faceStatus(status) {
+    document.getElementById("face").innerHTML = "Face: " + status;
 }
