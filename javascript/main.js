@@ -7,6 +7,7 @@ let columnsArray;
 let boardInformation;
 
 window.onload = function () {
+    setFaceStatus("img\\neutral.png");
     if (window.location.search.includes("?")) {
         calculateDimensionsFromMockData();
         setBoardSize(rows, columns)
@@ -27,6 +28,10 @@ function getMockData() {
 }
 
 
+function clickEvent() {
+    revealCell();
+    console.log("test1");
+}
 
 function createBoardElements() {
     for (let i = 0; i < rows; i++) {
@@ -40,9 +45,10 @@ function createBoardElements() {
             cell.classList.add("hidden");
             cell.classList.add("cell");
             cell.setAttribute("data-testid", i.toString() + "-" + j.toString());
-            cell.addEventListener("click", function () {
-                console.log(cell);
+            cell.addEventListener("click", clickEvent2 => {
                 revealCell(cell);
+                console.log("hello");
+                cell.removeEventListener("click", clickEvent2);
             });
             cell.addEventListener("contextmenu", (e) => {
                 e.preventDefault();
@@ -120,7 +126,7 @@ function setRandomMines() {
 }
 
 function revealCell(cell) {
-    console.log(cell);
+    // console.log(cell);
     let row = cell.id.split("-")[0];
     let col = cell.id.split("-")[1];
     cell.classList.remove("hidden");
@@ -174,7 +180,7 @@ function showAllMines() {
 function setBoardSize(rows, columns) {
     let widthpx = 50 * columns;
     let heightpx = 50 * rows;
-    
+
     document.getElementById("board").style.width = widthpx + "px";
     document.getElementById("board").style.height = heightpx + "px";
 }
@@ -203,5 +209,9 @@ function markCell(cell) {
     } else if (cell.innerHTML == "❓") {
         cell.innerHTML = "";
     }
+}
 
+function setFaceStatus(path) {
+    let face = document.getElementById("faceStatus");
+    face.setAttribute("src", path);
 }
