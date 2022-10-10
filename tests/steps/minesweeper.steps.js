@@ -61,3 +61,4 @@ Then('the cell {string} should show {int}', async function(string, int){
     const revealedCell = await page.locator('data-testid=' + string).innerText();
     expect(revealedCell).toBe(int.toString());
 });
+//test
