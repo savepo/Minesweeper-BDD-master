@@ -63,22 +63,22 @@ Then the cell "0-0" should display a bomb
 
 
 
-# Scenario Outline: Revealing a cell without mine but with adjacent mines, counting the number of adjacent mines
-# Given the user loads the following mock data: <board>
-# When the cell "2-2" is revealed
-# Then the cell "2-2" should show <adjacentMines>
+Scenario Outline: Revealing a cell without mine but with adjacent mines, counting the number of adjacent mines
+Given the user loads the following mock data: "<board>"
+When the user reveals the cell "1-1"
+Then the cell "1-1" should show <adjacentMines>
 
-# Examples:
-#     | board       | adjacentMines |
-#     | ooo-ooo-ooo |       0       | 
-#     | *oo-ooo-ooo |       1       |
-#     | **o-ooo-ooo |       2       |
-#     | ***-ooo-ooo |       3       |
-#     | ***-*oo-ooo |       4       |
-#     | ***-*o*-ooo |       5       |
-#     | ***-*o*-*oo |       6       |
-#     | ***-*o*-**o |       7       |
-#     | ***-*o*-*** |       8       |
+Examples:
+    | board       | adjacentMines |
+    | ooo-ooo-ooo |       0       | 
+    | *oo-ooo-ooo |       1       |
+    | **o-ooo-ooo |       2       |
+    | ***-ooo-ooo |       3       |
+    | ***-*oo-ooo |       4       |
+    | ***-*o*-ooo |       5       |
+    | ***-*o*-*oo |       6       |
+    | ***-*o*-**o |       7       |
+    | ***-*o*-*** |       8       |
 
 # Scenario: Cell status by default: enabled
 # Given the user loads the following mock data: "*o-*o"
