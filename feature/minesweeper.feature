@@ -80,9 +80,9 @@ Examples:
     | ***-*o*-**o |       7       |
     | ***-*o*-*** |       8       |
 
-# Scenario: Cell status by default: enabled
-# Given the user loads the following mock data: "*o-*o"
-# Then all the cells should be enabled
+Scenario: Cell status by default: enabled
+Given the user loads the following mock data: "*o-*o"
+Then all the cells should be enabled
 
 # Scenario: Reseting the game, the default status should be set
 # Given Load mock data "*o*-oo*-**o"
@@ -96,43 +96,42 @@ Examples:
 
 # # Marking cells as something 
 
-# Scenario: The user can tag a cell as mined when suspects that the cell contains a mine (flag)
-# When the user marks the cell "1-1" as mined
-# Then the cell "1-1" should show "!"
+Scenario: The user can tag a cell as mined when suspects that the cell contains a mine (flag)
+Given the user loads the following mock data: "oo-o*"
+When the user marks the cell "0-0" as mined
+Then the cell "0-0" should show a flag
 
-# Scenario: The user can tag a cell as uncertainn when doesn't have enough info to determine if the cell contains a mine (uncertain symbol)
-# When the user marks the cell "1-1" as uncertain
-# Then the cell "1-1" should show "?"
+Scenario: The user can tag a cell as uncertainn when doesn't have enough info to determine if the cell contains a mine (uncertain symbol)
+When the user marks the cell "1-1" as uncertain
+Then the cell "1-1" should show a question mark
 
-# Scenario: Removing a mark from a cell
-# When the user marks the cell "1-1" as no-marked
-# Then the cell "1-1" should show ""
+Scenario: Removing a mark from a cell
+When the user marks the cell "1-1" as no-marked
+Then the cell "1-1" should show void
 
 # # Flag counter
 
 # # // Scenario: Flag Counter --> Number that shows how many flags you're able to mark on the board when you haven't marked any cell as a flag
-# Scenario Outline: Default number of flags that shows how many flags left you can put on the board
-# Given the user loads the following mock data: "<board>"
-# Then the tag left counter should be "<count>"
+Scenario Outline: Default number of flags that shows how many flags left you can put on the board
+Given the user loads the following mock data: "<board>"
+Then the tag left counter should be "<count>"
 
-# Examples:
-# |board    | count |
-# |*o-*o    | 2    | 
-# |*ooo-*o*o| 3    | 
+Examples:
+|board    | count |
+|*o-*o    | 2    | 
+|*ooo-*o*o| 3    | 
 
 
-# Scenario: Substract "-1" from the Flag Counter every time a cell is marked with a flag.
-# Given the user loads the following mock data: "***-ooo-***"
-# And the "FlagCounterDisplay" shows "6"
-# When the user marks the cell "1-1" as mined
-# Then the "FlagCounterDisplay" should show "5"
+Scenario: Substract "-1" from the Flag Counter every time a cell is marked with a flag.
+Given the user loads the following mock data: "***-ooo-***"
+When the user marks the cell "0-0" as mined
+Then the flag counter should show "5"
 
-# Scenario: Removing the Flag Mark from a cell
-# Given the user loads the following mock data: "***-ooo-***"
-# And the user marks the cell "1-1" as mined
-# And the "FlagCounterDisplay" shows "5"
-# When the user unmarks the mined the cell "1-1" 
-# Then the "FlagCounterDisplay" should show "6"
+Scenario: Removing the Flag Mark from a cell
+Given the user loads the following mock data: "***-ooo-***"
+And the user marks the cell "0-0" as mined
+When the user marks the cell "0-0" as uncertain
+Then the flag counter should show "6"
 
 # # Time counter
 # @manual
@@ -161,29 +160,28 @@ Examples:
 # Then the "TimeCounter" should stop at "2"
 
 # # Happy Face
+# @current
+Scenario: Default face image
+Then the face image should be serious
 
-# Scenario: Default face image
-# Then the face image should be "serious"
-
-# Scenario: Face image displayed when the game has finished with a lose --> Display a SAD face
-# Given the user loads the following mock data: "***-ooo-***"
-# When the user reveals the cell "1-2"
-# Then the "faceImg" should be "sad"
+Scenario: Face image displayed when the game has finished with a lose --> Display a SAD face
+Given the user loads the following mock data: "***-ooo-***"
+When the user reveals the cell "1-2"
+Then the "faceImg" should be "sad"
 
 # Scenario: Face image displayed when the game has finished with a win --> Display a HAPPY face
 # Given the user loads the following mock data: "ooo-oo*-ooo"
 # When the user reveals the cell "2-3"
 # Then the "faceImg" should be "happy"
 
+# Scenario: Reseted game
+# Given a user reset the game
+# Then all the cells should be hidden 
+# And the cells should be enabled
+
 # Scenario: Reset the game pressing the face image
 # When the user presses on the face image
 # Then the game should be reseted
-
-# Scenario: Reseted game
-# Given a user reset the game
-# Then a default board should be loaded
-# And the cells should be hidden 
-# And the cells should be enabled
 
 # # Reveal 0 cells
 

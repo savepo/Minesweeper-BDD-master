@@ -5,22 +5,12 @@ let numOfMines = 10;
 let boardArray;
 let columnsArray;
 let boardInformation;
+let numberOfFlags;
 
 window.onload = function () {
-    setFaceStatus("img\\neutral.png");
-    if (window.location.search.includes("?")) {
-        calculateDimensionsFromMockData();
-        setBoardSize(rows, columns)
-    }
-    createBoardElements();
-    createBoardInformation();
-    if (window.location.search.includes("?")) {
-        setMinesFromMockData();
-    } else {
-        setRandomMines();
-    }
-
-    console.log(boardInformation);
+    eventListenerForFace();
+    newGame();
+    numberOfFlagsAllowedToPlace();
 }
 
 function getMockData() {
@@ -58,6 +48,16 @@ function createBoardElements() {
         }
     }
 }
+
+function eventListenerForFace() {
+    document.getElementById("faceButton").addEventListener("click", () => {
+    console.log("sdgsg");
+    deleteBoard();
+    newGame();
+    });
+}
+
+
 
 function createBoardInformation() {
     boardInformation = [rows];
@@ -123,6 +123,7 @@ function setRandomMines() {
     for (let i = 0; i < numOfMines; i++) {
         boardInformation[generateRandomInt(0, rows)][generateRandomInt(0, columns)] = "*";
     }
+    numberOfFlags = numOfMines;
 }
 
 function revealCell(cell) {
@@ -134,10 +135,12 @@ function revealCell(cell) {
     let cellContent = checkCellContent(row, col);
     if (cellContent == "*") {
         cell.innerHTML = "&#128163";
+        lostGame();
         showAllMines();
     } else {
         cell.innerHTML = cellContent;
     }
+    
 }
 
 function checkCellContent(r, c) {
@@ -186,14 +189,17 @@ function setBoardSize(rows, columns) {
 }
 
 function setMinesFromMockData() {
+    numOfMines = 0;
     let MockData = getMockData()[1].split("-");
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
             if (MockData[i].charAt(j) == "*") {
                 boardInformation[i][j] = "*";
+                numOfMines++;
             }
         }
     }
+    numberOfFlags = numOfMines;
     console.log(boardInformation);
 }
 
@@ -204,8 +210,12 @@ function generateRandomInt(min, max) {
 function markCell(cell) {
     if (cell.innerHTML == "") {
         cell.innerHTML = "🚩";
+        numberOfFlags--;
+        numberOfFlagsAllowedToPlace();
     } else if (cell.innerHTML == "🚩") {
         cell.innerHTML = "❓";
+        numberOfFlags++;
+        numberOfFlagsAllowedToPlace();
     } else if (cell.innerHTML == "❓") {
         cell.innerHTML = "";
     }
@@ -214,4 +224,37 @@ function markCell(cell) {
 function setFaceStatus(path) {
     let face = document.getElementById("faceStatus");
     face.setAttribute("src", path);
+}
+
+function newGame() {
+    setFaceStatus("img\\neutral.png");
+    if (window.location.search.includes("?")) {
+        calculateDimensionsFromMockData();
+        setBoardSize(rows, columns)
+    }
+    createBoardElements();
+    createBoardInformation();
+    if (window.location.search.includes("?")) {
+        setMinesFromMockData();
+    } else {
+        setRandomMines();
+    }
+    numberOfFlagsAllowedToPlace();
+    console.log(boardInformation);
+}
+
+function deleteBoard() {
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < columns; j++) {
+            document.getElementById(i.toString() + "-" + j.toString()).remove(); 
+        }
+    }
+}
+
+function numberOfFlagsAllowedToPlace() {
+    document.getElementById("flag-counter").innerHTML = numberOfFlags;
+}
+
+function lostGame() {
+    setFaceStatus("img\\boom.png");
 }

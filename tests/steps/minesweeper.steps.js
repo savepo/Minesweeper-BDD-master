@@ -10,6 +10,14 @@ async function clickCell(cellId) {
     await cell[0].click();
 }
 
+async function resetGameTest() {
+    await page.locator('data-testid="faceButton').click();
+}
+
+async function buttonRightClick(buttonId) {
+    await page.locator(`[data-testid="${buttonId}"]`).click({ button: "right" }); 
+}
+
 Given('the user opens the app', async () => {
     await page.goto(url);
 });
@@ -60,4 +68,64 @@ Then('the cell {string} should display a bomb', async (string) => {
 Then('the cell {string} should show {int}', async function(string, int){
     const revealedCell = await page.locator('data-testid=' + string).innerText();
     expect(revealedCell).toBe(int.toString());
+});
+
+// When ('the user marks the cell {string} as mined', async function(string) {
+//     await buttonRightClick(string);
+// });
+
+// Then('the cell {string} should show a flag', async function(string){
+//     const markedCell = await page.locator('data-testid=' + string).innerText();
+//     expect(markedCell).toBe("\u{1F6A9}");
+// });
+
+When ('the user marks the cell {string} as mined', async function(string) {
+    await buttonRightClick(string);
+});
+
+When ('the user marks the cell {string} as uncertain', async function(string) {
+    await buttonRightClick(string);
+    await buttonRightClick(string);
+});
+
+When ('the user marks the cell {string} as no-marked', async function(string) {
+    const markedCell = await page.locator('data-testid=' + string).innerText()
+    
+    if (markedCell == "\u{1F6A9}") {
+        await buttonRightClick(string);
+        await buttonRightClick(string);
+    } else if (markedCell == "\u{2753}") {
+        await buttonRightClick(string);
+    }
+});
+
+Then('the cell {string} should show a flag', async function(string){
+    const markedCell = await page.locator('data-testid=' + string).innerText();
+    expect(markedCell).toBe("\u{1F6A9}");
+});
+
+Then('the cell {string} should show a question mark', async function(string){
+    const markedCell = await page.locator('data-testid=' + string).innerText();
+    expect(markedCell).toBe("\u{2753}");
+});
+
+Then('the cell {string} should show void', async function(string){
+    const markedCell = await page.locator('data-testid=' + string).innerText();
+    expect(markedCell).toBe("");
+});
+
+Then('the tag left counter should be {string}', async function(string){
+    const flagCounter = await page.locator('data-testid=flag-counter').innerText();
+    expect(flagCounter).toBe(string);
+});
+
+Then('the flag counter should show {string}', async function(string){
+    const flagCounter = await page.locator('data-testid=flag-counter').innerText();
+    expect(flagCounter).toBe(string);
+});
+
+Then('the face image should be serious', async function(){
+    const faceImage = await page.locator('data-testid=faceStatus');
+    const imageSource = await faceImage.getAttribute('src');
+    expect(imageSource).toBe("img\\neutral.png");
 });
