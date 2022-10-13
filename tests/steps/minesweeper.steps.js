@@ -11,7 +11,7 @@ async function clickCell(cellId) {
 }
 
 async function resetGameTest() {
-    await page.locator('data-testid="faceButton').click();
+    await page.locator('data-testid=faceButton').click();
 }
 
 async function buttonRightClick(buttonId) {
@@ -114,18 +114,68 @@ Then('the cell {string} should show void', async function(string){
     expect(markedCell).toBe("");
 });
 
-Then('the tag left counter should be {string}', async function(string){
-    const flagCounter = await page.locator('data-testid=flag-counter').innerText();
-    expect(flagCounter).toBe(string);
-});
-
 Then('the flag counter should show {string}', async function(string){
     const flagCounter = await page.locator('data-testid=flag-counter').innerText();
     expect(flagCounter).toBe(string);
 });
 
-Then('the face image should be serious', async function(){
+Then('the face image should be {string}', async function(string){
     const faceImage = await page.locator('data-testid=faceStatus');
     const imageSource = await faceImage.getAttribute('src');
-    expect(imageSource).toBe("img\\neutral.png");
+    switch (string) {
+        case "serious":
+            expect(imageSource).toBe("img\\neutral.png");
+            break;
+    
+        case "exploded":
+            expect(imageSource).toBe("img\\boom.png");
+            break;
+        default:
+
+            break;
+    }
+});
+
+Then('all the cells should be enabled', async function () {
+    const numOfDisabled = await page.$$('.disabled');;
+    expect(numOfDisabled.length).toBe(0);
+});
+
+When('the user reset the game', async function () {
+    await resetGameTest();
+});
+
+When('the user presses on the face image', async function () {
+    await resetGameTest();
+});
+
+Then('the game should be finished with the following result: {string}', async function (string) {
+    const faceImage = await page.locator('data-testid=faceStatus');
+    const imageSource = await faceImage.getAttribute('src');
+    switch (string) {
+        case "Win":
+            expect(imageSource).toBe("img\\happy.png");
+            break;
+    
+        case "Game over":
+            expect(imageSource).toBe("img\\boom.png");
+            break;
+        default:
+
+            break;
+    }
+});
+
+Then('all the cells should be disabled', async function () {
+    const numOfDisabled = await page.$$('.disabled');
+    const cellClass = await page.$$('.cell');
+    expect(numOfDisabled.length).toBe(cellClass.length);
+});
+
+When('the user left-click on the cell {string}', async function (string) {
+    await page.locator('data-testid=' + string).click();
+});
+
+When('the user right-click on the cell {string}', async function (string) {
+    await buttonRightClick(string);
 });

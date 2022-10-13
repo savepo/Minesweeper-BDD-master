@@ -1,11 +1,12 @@
 let boardSize = 8;
 let rows = 8;
 let columns = 8;
-let numOfMines = 10;
+let numOfMines = 3;
 let boardArray;
 let columnsArray;
 let boardInformation;
 let numberOfFlags;
+let revealedCells = 0;
 
 window.onload = function () {
     eventListenerForFace();
@@ -16,6 +17,7 @@ window.onload = function () {
 function getMockData() {
     return window.location.search.split("?");
 }
+
 
 
 function clickEvent() {
@@ -35,10 +37,9 @@ function createBoardElements() {
             cell.classList.add("hidden");
             cell.classList.add("cell");
             cell.setAttribute("data-testid", i.toString() + "-" + j.toString());
-            cell.addEventListener("click", clickEvent2 => {
+            cell.addEventListener("click", clickEvent => {
                 revealCell(cell);
                 console.log("hello");
-                cell.removeEventListener("click", clickEvent2);
             });
             cell.addEventListener("contextmenu", (e) => {
                 e.preventDefault();
@@ -56,8 +57,6 @@ function eventListenerForFace() {
     newGame();
     });
 }
-
-
 
 function createBoardInformation() {
     boardInformation = [rows];
@@ -126,47 +125,6 @@ function setRandomMines() {
     numberOfFlags = numOfMines;
 }
 
-function revealCell(cell) {
-    // console.log(cell);
-    let row = cell.id.split("-")[0];
-    let col = cell.id.split("-")[1];
-    cell.classList.remove("hidden");
-    cell.classList.add("unhidden");
-    let cellContent = checkCellContent(row, col);
-    if (cellContent == "*") {
-        cell.innerHTML = "&#128163";
-        lostGame();
-        showAllMines();
-    } else {
-        cell.innerHTML = cellContent;
-    }
-    
-}
-
-function checkCellContent(r, c) {
-    if (boardInformation[parseInt(r)][parseInt(c)] == "*") {
-        return "*";
-    } else if (boardInformation[r][c] == "o") {
-        return countAdjacentMines(r, c);
-    }
-}
-
-function countAdjacentMines(r, c) {
-    let numOfAdjacentMines = 0;
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            try {
-                if (boardInformation[r - 1 + i][c - 1 + j] == "*") {
-                    numOfAdjacentMines++;
-                }
-            } catch {
-                console.log("Trying to check a cell that is out of the ragne of the array.");
-            }
-        }
-    }
-    return numOfAdjacentMines;
-}
-
 function showAllMines() {
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
@@ -175,7 +133,17 @@ function showAllMines() {
                 cell.innerHTML = "&#128163";
                 cell.classList.remove("hidden");
                 cell.classList.add("unhidden");
+                cell.classList.add("disabled");
             }
+        }
+    }
+}
+
+function disableAllCells() {
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < columns; j++) {
+            let cell = document.getElementById(i.toString() + "-" + j.toString());
+            cell.classList.add("disabled");        
         }
     }
 }
@@ -227,6 +195,7 @@ function setFaceStatus(path) {
 }
 
 function newGame() {
+    revealedCells = 0;
     setFaceStatus("img\\neutral.png");
     if (window.location.search.includes("?")) {
         calculateDimensionsFromMockData();
@@ -257,4 +226,84 @@ function numberOfFlagsAllowedToPlace() {
 
 function lostGame() {
     setFaceStatus("img\\boom.png");
+}
+
+function revealCell(cell) {
+    // console.log(cell);
+    let row = cell.id.split("-")[0];
+    let col = cell.id.split("-")[1];
+    cell.classList.remove("hidden");
+    cell.classList.add("unhidden");
+    revealedCells++;
+    cell.classList.add("disabled");
+    let cellContent = checkCellContent(row, col);
+    if (cellContent == "*") {
+        cell.innerHTML = "&#128163";
+        lostGame();
+        showAllMines();
+        disableAllCells();
+    } else {
+        cell.innerHTML = cellContent;
+        if (cellContent == 0) {
+            revealAdjacentCells(row, col);
+        }
+        
+        if (revealedCells >= (rows * columns) - numOfMines) {
+            setFaceStatus("img\\happy.png");
+            disableAllCells();
+        }
+    } 
+}
+
+function checkCellContent(r, c) {
+    if (boardInformation[parseInt(r)][parseInt(c)] == "*") {
+        return "*";
+    } else if (boardInformation[r][c] == "o") {
+        return countAdjacentMines(r, c);
+    }
+}
+
+function countAdjacentMines(r, c) {
+    let numOfAdjacentMines = 0;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            try {
+                if (boardInformation[r - 1 + i][c - 1 + j] == "*") {
+                    numOfAdjacentMines++;
+                }
+            } catch {
+                console.log("Trying to check a cell that is out of the ragne of the array.");
+            }
+        }
+    }
+    return numOfAdjacentMines;
+}
+
+function revealAdjacentCells(r, c) {
+    let ro = r;
+    let co = c;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            try {
+                ro = r - 1 + i;
+                co = c - 1 + j;   
+                // if (document.getElementById(ro.toString() + "-" + co.toString()).innerHTML == "0" && document.getElementById(ro.toString() + "-" + co.toString()).classList.contains("unhidden")){
+                //     revealAdjacentCells(ro, co);
+                // }            
+
+                if (document.getElementById(ro.toString() + "-" + co.toString()).classList.contains("hidden")) {
+                    document.getElementById(ro.toString() + "-" + co.toString()).classList.remove("hidden");
+                    document.getElementById(ro.toString() + "-" + co.toString()).classList.add("unhidden");
+                    revealedCells++; 
+                    document.getElementById(ro.toString() + "-" + co.toString()).innerHTML = countAdjacentMines(ro,co);
+                    if (document.getElementById(ro.toString() + "-" + co.toString()).innerHTML == "0") {
+                        revealAdjacentCells(ro, co);
+                    }
+                    
+                }
+            } catch {
+                console.log("Trying to check a cell that is out of the ragne of the array.");
+            }
+        }
+    }
 }

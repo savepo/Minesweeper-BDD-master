@@ -39,15 +39,15 @@ Then the cell "0-0" should be revealed
 
 # # Revealing cells
 
-# Scenario: The game is over when the user reveals a cell that contains a mine
-# Given the user loads the following mock data: "*oo-ooo-ooo"
-# When the user reveals the cell "1-1"
-# Then the game should be finished with the following result: "Game over"
+Scenario: The game is over when the user reveals a cell that contains a mine
+Given the user loads the following mock data: "*oo-ooo-ooo"
+When the user reveals the cell "0-0"
+Then the game should be finished with the following result: "Game over"
 
-# Scenario: Revealing all the cells that not contains a mine -> Game won
-# Given the user loads the following mock data: "*o"
-# When the user reveals the cell "1-2"
-# Then the game should be finished with the following result: "Win"
+Scenario: Revealing all the cells that not contains a mine -> Game won
+Given the user loads the following mock data: "*o"
+When the user reveals the cell "0-1"
+Then the game should be finished with the following result: "Win"
 
 Scenario: All the mines are revealed when the user reveals a cell that contains a mine
 Given the user loads the following mock data: "**-*o"
@@ -84,15 +84,15 @@ Scenario: Cell status by default: enabled
 Given the user loads the following mock data: "*o-*o"
 Then all the cells should be enabled
 
-# Scenario: Reseting the game, the default status should be set
-# Given Load mock data "*o*-oo*-**o"
-# And the user reveals the cell "1-2"
-# And the user reveals the cell "1-1"
-# When the user reset the game
-# Then all the cells should be hidden
-# And all the cells should be enabled
-# And the flag counter should be "4"
-# And the time counter should be ""
+Scenario: Reseting the game, the default status should be set
+Given the user loads the following mock data: "*o*-oo*-**o"
+And the user reveals the cell "0-1"
+And the user reveals the cell "0-0"
+When the user reset the game
+Then all the cells should be hidden
+And all the cells should be enabled
+And the flag counter should show "5"
+And the time counter should be ""
 
 # # Marking cells as something 
 
@@ -111,10 +111,9 @@ Then the cell "1-1" should show void
 
 # # Flag counter
 
-# # // Scenario: Flag Counter --> Number that shows how many flags you're able to mark on the board when you haven't marked any cell as a flag
 Scenario Outline: Default number of flags that shows how many flags left you can put on the board
 Given the user loads the following mock data: "<board>"
-Then the tag left counter should be "<count>"
+Then the flag counter should show "<count>"
 
 Examples:
 |board    | count |
@@ -162,61 +161,33 @@ Then the flag counter should show "6"
 # # Happy Face
 # @current
 Scenario: Default face image
-Then the face image should be serious
+Then the face image should be "serious"
 
 Scenario: Face image displayed when the game has finished with a lose --> Display a SAD face
-Given the user loads the following mock data: "***-ooo-***"
-When the user reveals the cell "1-2"
-Then the "faceImg" should be "sad"
+Given the user loads the following mock data: "*o"
+When the user reveals the cell "0-0"
+Then the face image should be "exploded"
 
-# Scenario: Face image displayed when the game has finished with a win --> Display a HAPPY face
-# Given the user loads the following mock data: "ooo-oo*-ooo"
-# When the user reveals the cell "2-3"
-# Then the "faceImg" should be "happy"
+Scenario: Face image displayed when the game has finished with a win --> Display a HAPPY face
+Given the user loads the following mock data: "o*"
+When the user reveals the cell "0-0"
+Then the face image should be "happy"
 
-# Scenario: Reseted game
-# Given a user reset the game
-# Then all the cells should be hidden 
-# And the cells should be enabled
-
-# Scenario: Reset the game pressing the face image
-# When the user presses on the face image
-# Then the game should be reseted
+Scenario: Reset the game pressing the face image
+When the user presses on the face image
+Then all the cells should be hidden
+And all the cells should be enabled
+And the flag counter should show "10"
+And the time counter should be ""
 
 # # Reveal 0 cells
 
-# # Scenario: Reveal a cell that has 0 adjacent mines
-# # Given the user loads the following mock data: "ooo-ooo-ooo"
-# # When the user reveals the cell "2-2"
-# # Then the cell "2-2" should be "0"
-
-# Scenario: Revealing a cell without mine and without surrounding mines, the cell is empty
-# Given the user loads the following mock data: 
-# """
-# ooo
-# ooo
-# ooo
-# ***
-# """
-# When the user reveals the cell "2-2"
-# Then cell "2-2" should be empty
-
-# Scenario: Revealing an empty cell, revel all the adjacent cells
-# Given the user loads the following mock data: 
-# """
-# ooo
-# ooo
-# ooo
-# ***
-# """
-# When the user reveals the cell "2-2"
-# Then board should look like:
-# """
-# 000
-# 000
-# 232
-# ...
-# """
+Scenario: Revealing an empty cell, revel all the adjacent cells
+Given the user loads the following mock data: 
+"ooo-ooo-ooo-***"
+When the user reveals the cell "1-1"
+Then board should look like:
+"000-000-232-..."
 
 # Scenario: An empty cell revealed by a neighbour, revel all the adjacent cells of the empty cell
 # Given the user loads the following mock data: 
@@ -241,67 +212,28 @@ Then the "faceImg" should be "sad"
 
 # # Disabled actions
 
-# Scenario: When the user loses, all the cells get disabled
-# Given the user loads the following mock data: "oo-*o"
-# When the user reveals the cell "2-1"
-# Then all the cells should be disabled
+Scenario: When the user loses, all the cells get disabled
+Given the user loads the following mock data: "oo-*o"
+When the user reveals the cell "1-0"
+Then all the cells should be disabled
 
-# Scenario: When the user reveals all the empty cells (wins), all the cells get disabled
-# Given the user loads the following mock data: "**-*o"
-# When the user reveals the cell "2-2"
-# Then the cell "1-1" should be disabled
-# And the cell "1-2" should be disabled
-# And the cell "2-1" should be disabled
-# And the cell "2-2" should be disabled
-
-# # Reveal bombs
-
-# Scenario: When a mine explodes the othe mines must be revealed
-# Given the user loads the following mock data: "**-*o"
-# When the user reveals the cell "1-1"
-# Then the cell "1-2" should display a "explodedBomb"
-# And the cell "2-1" should display a "explodedBomb"
+Scenario: When the user reveals all the empty cells (wins), all the cells get disabled
+Given the user loads the following mock data: "**-*o"
+When the user reveals the cell "1-1"
+Then all the cells should be disabled
 
 # # Computer controls
 
-# Scenario: Revealing a cell with the mouse (left-click)
-# Given the user loads the following mock data: "*o-o*"
-# When the user left-click on the cell "1-1"
-# Then the cell "1-1" should be revealed
+Scenario: Revealing a cell with the mouse (left-click)
+Given the user loads the following mock data: "*o-o*"
+When the user left-click on the cell "1-1"
+Then the cell "1-1" should be revealed
 
-# Scenario Outline: tagging a cell with the mouse (right-click)
-# Given the user opens the app
-# And the user tags the cell "1-1" as "<initialStatus>"
-# When the user right click on the cell "1-1"
-# Then the cell "1-1" should show "<finalStatus>"
+Scenario: Mark a cell as if it has a mine (flag) with the mouse
+When the user right-click on the cell "1-1"
+Then the cell "1-1" should show a flag
 
-# Examples:
-# | initialStatus | finalStatus |
-# | no-marked     | mined       |
-# | mined         | uncertain   |
-# | uncertain     | no-marked   |
-
-# Scenario: Mark a cell as if it has a mine (flag) with the mouse
-# Given the user opens the app
-# When the user right-click on the cell "1-1"
-# Then the cell "1-1" should show "!"
-
-# Scenario: Mark a cell as you don't know what it contains (uncertain symbol) with the mouse
-# Given a user opens the app
-# When the user right-click on the cell "1-1"
-# And the user right-click on the cell "1-1"
-# Then the cell "1-1" should show "?"
-
-# Scenario: Removing a mark from a cell
-# Given a user opens the app
-# When the user right-click on the cell "1-1"
-# And the user right-click on the cell "1-1"
-# And the user right-click on the cell "1-1"
-# Then the cell "1-1" should show ""
-
-# Scenario: Reset the game pressing the face image with a mouse
-# When the user left-click on the face image
-# Then the game should be reseted
-
-# # Scenario: Reveal a cell that contains a mine -> se deben destacar las banderitas mal marcadas
-# # //TODO
+Scenario: Mark a cell as you don't know what it contains (uncertain symbol) with the mouse
+When the user right-click on the cell "1-1"
+And the user right-click on the cell "1-1"
+Then cell "1-1" should show a question mark
