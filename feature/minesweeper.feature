@@ -237,3 +237,8 @@ Scenario: Mark a cell as you don't know what it contains (uncertain symbol) with
 When the user right-click on the cell "1-1"
 And the user right-click on the cell "1-1"
 Then cell "1-1" should show a question mark
+
+Scenario: All flags should be shown when the user reveals all the cells that not contains a mine
+Given the user loads the following mock data: "o*-**"
+When the user reveals the cell "0-0"
+Then all the mines should be tagged with a flag

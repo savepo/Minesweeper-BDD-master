@@ -52,9 +52,9 @@ function createBoardElements() {
 
 function eventListenerForFace() {
     document.getElementById("faceButton").addEventListener("click", () => {
-    console.log("sdgsg");
-    deleteBoard();
-    newGame();
+        console.log("sdgsg");
+        deleteBoard();
+        newGame();
     });
 }
 
@@ -143,7 +143,7 @@ function disableAllCells() {
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
             let cell = document.getElementById(i.toString() + "-" + j.toString());
-            cell.classList.add("disabled");        
+            cell.classList.add("disabled");
         }
     }
 }
@@ -215,7 +215,7 @@ function newGame() {
 function deleteBoard() {
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
-            document.getElementById(i.toString() + "-" + j.toString()).remove(); 
+            document.getElementById(i.toString() + "-" + j.toString()).remove();
         }
     }
 }
@@ -247,12 +247,23 @@ function revealCell(cell) {
         if (cellContent == 0) {
             revealAdjacentCells(row, col);
         }
-        
+
         if (revealedCells >= (rows * columns) - numOfMines) {
             setFaceStatus("img\\happy.png");
             disableAllCells();
+            tagAllMinesWithFlag();
         }
-    } 
+    }
+}
+
+function tagAllMinesWithFlag() {
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < columns; j++) {
+            if (boardInformation[i][j] == "*"){
+                document.getElementById(i.toString() + "-" + j.toString()).innerHTML = "🚩";
+            }
+        }
+    }
 }
 
 function checkCellContent(r, c) {
@@ -286,20 +297,17 @@ function revealAdjacentCells(r, c) {
         for (let j = 0; j < 3; j++) {
             try {
                 ro = r - 1 + i;
-                co = c - 1 + j;   
-                // if (document.getElementById(ro.toString() + "-" + co.toString()).innerHTML == "0" && document.getElementById(ro.toString() + "-" + co.toString()).classList.contains("unhidden")){
-                //     revealAdjacentCells(ro, co);
-                // }            
+                co = c - 1 + j;
 
                 if (document.getElementById(ro.toString() + "-" + co.toString()).classList.contains("hidden")) {
                     document.getElementById(ro.toString() + "-" + co.toString()).classList.remove("hidden");
                     document.getElementById(ro.toString() + "-" + co.toString()).classList.add("unhidden");
-                    revealedCells++; 
-                    document.getElementById(ro.toString() + "-" + co.toString()).innerHTML = countAdjacentMines(ro,co);
+                    revealedCells++;
+                    document.getElementById(ro.toString() + "-" + co.toString()).innerHTML = countAdjacentMines(ro, co);
                     if (document.getElementById(ro.toString() + "-" + co.toString()).innerHTML == "0") {
                         revealAdjacentCells(ro, co);
                     }
-                    
+
                 }
             } catch {
                 console.log("Trying to check a cell that is out of the ragne of the array.");
