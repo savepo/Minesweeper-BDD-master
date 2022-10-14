@@ -1,15 +1,18 @@
 let boardSize = 8;
 let rows = 8;
 let columns = 8;
-let numOfMines = 3;
+let numOfMines = 10;
 let boardArray;
 let columnsArray;
 let boardInformation;
+let boardTagsInfo;
 let numberOfFlags;
 let revealedCells = 0;
+let timeIsActive = false;
+let interval;
 
 window.onload = function () {
-    eventListenerForFace();
+    resetClickingFace();
     newGame();
     numberOfFlagsAllowedToPlace();
 }
@@ -18,14 +21,8 @@ function getMockData() {
     return window.location.search.split("?");
 }
 
-
-
-function clickEvent() {
-    revealCell();
-    console.log("test1");
-}
-
 function createBoardElements() {
+    let firstClick = true;
     for (let i = 0; i < rows; i++) {
         let row = document.createElement("div");
         row.classList.add("row");
@@ -37,9 +34,12 @@ function createBoardElements() {
             cell.classList.add("hidden");
             cell.classList.add("cell");
             cell.setAttribute("data-testid", i.toString() + "-" + j.toString());
-            cell.addEventListener("click", clickEvent => {
+            cell.addEventListener("click", function () {
+                if (!timeIsActive) {
+                    timeIsActive = true;
+                    TimeCounterControl();
+                }
                 revealCell(cell);
-                console.log("hello");
             });
             cell.addEventListener("contextmenu", (e) => {
                 e.preventDefault();
@@ -50,10 +50,19 @@ function createBoardElements() {
     }
 }
 
-function eventListenerForFace() {
+function leftClickEvent() {
+    if (!timeIsActive) {
+        timeIsActive = true;
+        TimeCounterControl();
+    }
+    revealCell(cell);
+}
+
+function resetClickingFace() {
     document.getElementById("faceButton").addEventListener("click", () => {
-        console.log("sdgsg");
         deleteBoard();
+        clearInterval(interval);
+        timeIsActive = false;
         newGame();
     });
 }
@@ -69,23 +78,15 @@ function createBoardInformation() {
             boardInformation[i][j] = "o";
         }
     }
-    console.log(boardInformation);
 }
 
-
+// ========================= BOARD CREATION========================= //
 
 function calculateDimensionsFromMockData() {
     let ContentUrl = window.location.search.split("?");
     let MockData = ContentUrl[1].split("-");
     rows = MockData.length;
     columns = MockData[0].length;
-}
-
-
-function setRandomMines() {
-    for (let i = 0; i < numOfMines; i++) {
-        boardInformation[generateRandomInt(0, rows)][generateRandomInt(0, columns)];
-    }
 }
 
 function setBoardSize(rows, columns) {
@@ -175,6 +176,19 @@ function generateRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min)
 }
 
+function createMarksArray() {
+    boardTagsInfo = [rows];
+    for (let i = 0; i < rows; i++) {
+        boardTagsInfo[i] = [columns];
+    }
+
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < columns; j++) {
+            boardTagsInfo[i][j] = "";
+        }
+    }
+}
+
 function markCell(cell) {
     if (cell.innerHTML == "") {
         cell.innerHTML = "🚩";
@@ -197,6 +211,7 @@ function setFaceStatus(path) {
 function newGame() {
     revealedCells = 0;
     setFaceStatus("img\\neutral.png");
+    document.getElementById("time-counter").innerHTML = "0";
     if (window.location.search.includes("?")) {
         calculateDimensionsFromMockData();
         setBoardSize(rows, columns)
@@ -225,6 +240,9 @@ function numberOfFlagsAllowedToPlace() {
 }
 
 function lostGame() {
+    clearInterval(interval);
+    firstClick = true;
+    timeIsActive = false;
     setFaceStatus("img\\boom.png");
 }
 
@@ -259,7 +277,7 @@ function revealCell(cell) {
 function tagAllMinesWithFlag() {
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
-            if (boardInformation[i][j] == "*"){
+            if (boardInformation[i][j] == "*") {
                 document.getElementById(i.toString() + "-" + j.toString()).innerHTML = "🚩";
             }
         }
@@ -314,4 +332,14 @@ function revealAdjacentCells(r, c) {
             }
         }
     }
+}
+
+function TimeCounterControl() {
+    let second = 1;
+    interval = setInterval(function () {
+        if (timeIsActive) {
+            document.getElementById("time-counter").innerHTML = second.toString();
+            second++;
+        }
+    }, 1000);
 }

@@ -92,7 +92,7 @@ When the user reset the game
 Then all the cells should be hidden
 And all the cells should be enabled
 And the flag counter should show "5"
-And the time counter should be ""
+And the time counter should be "0"
 
 # # Marking cells as something 
 
@@ -183,32 +183,29 @@ And the time counter should be ""
 # # Reveal 0 cells
 
 Scenario: Revealing an empty cell, revel all the adjacent cells
+Given the user loads the following mock data: "ooo-ooo-ooo-***"
+When the user reveals the cell "1-1"
+Then board should look like: "000-000-232-..."
+
+
+Scenario: An empty cell revealed by a neighbour, revel all the adjacent cells of the empty cell
 Given the user loads the following mock data: 
-"ooo-ooo-ooo-***"
+"""
+oooo*
+ooooo
+oooo*
+ooooo
+*oo**
+"""
 When the user reveals the cell "1-1"
 Then board should look like:
-"000-000-232-..."
-
-# Scenario: An empty cell revealed by a neighbour, revel all the adjacent cells of the empty cell
-# Given the user loads the following mock data: 
-# """
-# oooo*
-# ooooo
-# oooo*
-# ooooo
-# *oo**
-# """
-# When the user reveals the cell "1-1"
-# Then board should look like:
-# """
-# 0001.
-# 0002.
-# 0001.
-# 1113.
-# .....
-# """
-
-# # ???? Scenario: A cell with surrounding mines revealed by a neighbour, the adjacent mines should not be revealed
+"""
+0001.
+0002.
+0001.
+1113.
+.....
+"""
 
 # # Disabled actions
 
